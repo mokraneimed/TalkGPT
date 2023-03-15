@@ -96,10 +96,14 @@ class _Inbox extends State<Inbox> {
                         }),
                   );
                 } else {
-                  return LoadingIndicator(
-                    indicatorType: Indicator.circleStrokeSpin,
-                    colors: [Color(0xFFF62F53)],
-                    strokeWidth: 2,
+                  return SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: LoadingIndicator(
+                      indicatorType: Indicator.circleStrokeSpin,
+                      colors: [Color(0xFFF62F53)],
+                      strokeWidth: 2,
+                    ),
                   );
                 }
               })
