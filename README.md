@@ -1,4 +1,4 @@
-# kyo
+# VoiceGPT
 
 A new Flutter project.
 
