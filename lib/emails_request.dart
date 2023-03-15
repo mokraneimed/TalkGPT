@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class GoogleService {
   static List emails = [];
   static GoogleSignIn? googleUser;
+  static UserCredential? user;
   static signInWithGoogle() async {
     try {
       googleUser = await GoogleSignIn(
@@ -21,9 +22,8 @@ class GoogleService {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      UserCredential user =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      print(user.user?.displayName);
+      user = await FirebaseAuth.instance.signInWithCredential(credential);
+      print(user?.user?.displayName);
     } catch (e) {
       print('Error signing in with Google: $e');
     }
@@ -33,11 +33,11 @@ class GoogleService {
     try {
       final authClient = await googleUser!.authenticatedClient();
       final gmailApi = GmailApi(authClient!);
-      final messages_ids = await gmailApi.users.messages
-          .list("li_mokrane@esi.dz", maxResults: 10);
+      final email = await user?.user?.email;
+      final messages_ids =
+          await gmailApi.users.messages.list(email!, maxResults: 20);
       for (final message in messages_ids.messages!) {
-        final msg =
-            await gmailApi.users.messages.get('li_mokrane@esi.dz', message.id!);
+        final msg = await gmailApi.users.messages.get(email, message.id!);
         print('Message ID: ${msg.id}');
         print('Snippet: ${msg.snippet}');
         emails.add(msg.snippet);

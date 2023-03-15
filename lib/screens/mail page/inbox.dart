@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:kyo/screens/mail page/generating_page.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
-bool first_run = true;
-
 class Inbox extends StatefulWidget {
   @override
   const Inbox({super.key});
@@ -77,51 +75,34 @@ class _Inbox extends State<Inbox> {
               ),
             ),
           ),
-          (first_run)
-              ? FutureBuilder<List>(
-                  future: GoogleService.getEmails(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final List emails = snapshot.data!;
-                      return Expanded(
-                        child: ListView.builder(
-                            itemCount: emails.length + 1,
-                            itemBuilder: (BuildContext context, index) {
-                              first_run = false;
-                              return (index == 0)
-                                  ? SizedBox(
-                                      height: 0,
-                                    )
-                                  : GestureDetector(
-                                      onTap: () {},
-                                      child: Mail(
-                                        email: emails[index - 1],
-                                      ));
-                            }),
-                      );
-                    } else {
-                      return LoadingIndicator(
-                        indicatorType: Indicator.circleStrokeSpin,
-                        colors: [Color(0xFFF62F53)],
-                        strokeWidth: 2,
-                      );
-                    }
-                  })
-              : Expanded(
-                  child: ListView.builder(
-                      itemCount: GoogleService.emails.length + 1,
-                      itemBuilder: (BuildContext context, index) {
-                        return (index == 0)
-                            ? SizedBox(
-                                height: 0,
-                              )
-                            : GestureDetector(
-                                onTap: () {},
-                                child: Mail(
-                                  email: GoogleService.emails[index - 1],
-                                ));
-                      }),
-                )
+          FutureBuilder<List>(
+              future: GoogleService.getEmails(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final List emails = snapshot.data!;
+                  return Expanded(
+                    child: ListView.builder(
+                        itemCount: emails.length + 1,
+                        itemBuilder: (BuildContext context, index) {
+                          return (index == 0)
+                              ? SizedBox(
+                                  height: 0,
+                                )
+                              : GestureDetector(
+                                  onTap: () {},
+                                  child: Mail(
+                                    email: emails[index - 1],
+                                  ));
+                        }),
+                  );
+                } else {
+                  return LoadingIndicator(
+                    indicatorType: Indicator.circleStrokeSpin,
+                    colors: [Color(0xFFF62F53)],
+                    strokeWidth: 2,
+                  );
+                }
+              })
         ],
       ),
     );
