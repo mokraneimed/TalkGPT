@@ -1,4 +1,4 @@
-# VoiceGPT
+# TalkGPT
 
 A new Flutter project.
 
