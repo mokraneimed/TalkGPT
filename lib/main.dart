@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kyo/controllers/chat_controller.dart';
+import 'package:kyo/controllers/email_genearator_controller.dart';
 import 'package:kyo/recorder.dart';
 import 'package:kyo/emails_request.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:kyo/screens/Auth page/Auth.dart';
 import 'package:kyo/screens/Chat page/home_page.dart';
+import 'package:sizer/sizer.dart' as sizer;
 
 TextEditingController controller = TextEditingController();
 String generatedText = '';
@@ -25,25 +29,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            } else {
-              if (snapshot.data == null) {
-                return AuthPage();
-              } else {
-                return HomePage();
-              }
-            }
-          },
-        ));
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => EmailGenerator()),
+        ChangeNotifierProvider(create: (context) => ChatController())
+      ],
+      child: sizer.Sizer(builder: (context, orientation, deviceType) {
+        return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                } else {
+                  if (snapshot.data == null) {
+                    return AuthPage();
+                  } else {
+                    return HomePage();
+                  }
+                }
+              },
+            ));
+      }),
+    );
   }
 }

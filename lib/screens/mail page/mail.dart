@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kyo/controllers/email_genearator_controller.dart';
 import 'package:kyo/screens/mail page/generating_page.dart';
+import 'package:provider/provider.dart';
 
 class Mail extends StatelessWidget {
   String email;
@@ -37,6 +39,7 @@ class Mail extends StatelessWidget {
           ],
         ),
         onTap: () {
+          context.read<EmailGenerator>().init();
           Navigator.push(
             context,
             MaterialPageRoute(
