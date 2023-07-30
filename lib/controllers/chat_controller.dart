@@ -16,7 +16,6 @@ class ChatController extends ChangeNotifier {
       try {
         prompts.add({"role": "user", "content": '$prompt'});
         questions.insert(0, prompt);
-
         response = await dataService.sendRequestChat(prompts);
       } catch (e) {
       } finally {
