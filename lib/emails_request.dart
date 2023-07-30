@@ -1,10 +1,11 @@
 import 'dart:convert';
-
+import 'package:collection/collection.dart';
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kyo/screens/models/email.dart';
 
 class GoogleService {
   static List emails = [];
@@ -42,11 +43,61 @@ class GoogleService {
         final msg = await gmailApi.users.messages.get(email, message.id!);
         final payload = msg.payload;
         final parts = payload!.parts;
+        String? subject = payload.headers!
+            .firstWhereOrNull(
+              (header) => header.name == "Subject",
+            )!
+            .value;
+        print(subject);
+        String? fromInfo = payload.headers!
+            .firstWhereOrNull((header) => header.name == "From")!
+            .value;
+        print(fromInfo);
+        List<String> _fromInfo = fromInfo!.split("\u003c");
+        print(_fromInfo[0]);
+        List<String> senderEmail = _fromInfo[1].split("\u003e");
+        print(senderEmail[0]);
+        String? inReplyTo;
+        String? messageID;
+        String? refrences;
+        try {
+          inReplyTo = payload.headers!
+              .firstWhere((header) => header.name == "In-Reply-To")
+              .value;
+        } catch (e) {
+          inReplyTo = null;
+        }
+
+        print(inReplyTo);
+        try {
+          messageID = payload.headers!
+              .firstWhere((header) => header.name == "Message-ID")
+              .value;
+        } catch (e) {
+          messageID = null;
+        }
+        print(messageID);
+        try {
+          refrences = payload.headers!
+              .firstWhere((header) => header.name == "Refrences")
+              .value;
+        } catch (e) {
+          refrences = null;
+        }
+        print(refrences);
         if (parts == null) {
           if (payload.mimeType == "text/plain") {
             List<int> decodedBytes = base64Url.decode(payload.body!.data!);
             String decodedString = utf8.decode(decodedBytes);
-            emails.add(decodedString);
+            final Email email = Email(
+                message: decodedString,
+                subject: subject,
+                senderName: _fromInfo[0],
+                senderEmail: senderEmail[0],
+                messageID: messageID,
+                refrences: refrences,
+                inReplyTo: inReplyTo);
+            emails.add(email);
           }
         } else {
           for (final part in parts) {
@@ -56,7 +107,15 @@ class GoogleService {
             if (mimeType == "text/plain") {
               List<int> decodedBytes = base64Url.decode(data!);
               String decodedString = utf8.decode(decodedBytes);
-              emails.add(decodedString);
+              final Email email = Email(
+                  message: decodedString,
+                  subject: subject,
+                  senderName: _fromInfo[0],
+                  senderEmail: senderEmail[0],
+                  messageID: messageID,
+                  refrences: refrences,
+                  inReplyTo: inReplyTo);
+              emails.add(email);
             }
           }
         }

@@ -1,10 +1,18 @@
 class Email {
-  String? title;
+  String? subject;
   String? senderEmail;
   String? senderName;
-  String? date;
-  String? content;
+  String? message;
+  String? inReplyTo;
+  String? messageID;
+  String? refrences;
 
   Email(
-      {this.title, this.content, this.date, this.senderEmail, this.senderName});
+      {this.subject,
+      this.senderEmail,
+      this.senderName,
+      this.message,
+      this.inReplyTo,
+      this.messageID,
+      this.refrences});
 }

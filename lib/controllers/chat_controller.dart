@@ -8,8 +8,10 @@ class ChatController extends ChangeNotifier {
   static String response = '';
   static List responses = [];
   static bool isLoading = false;
+  static TextEditingController messageController = TextEditingController();
 
-  void sendRequest(String prompt) async {
+  void sendRequest() async {
+    String prompt = messageController.text;
     isLoading = true;
     notifyListeners();
     Future.delayed(Duration(milliseconds: 20), () async {
@@ -22,6 +24,7 @@ class ChatController extends ChangeNotifier {
         responses.insert(0, response);
         prompts.add({"role": "system", "content": '$response'});
         isLoading = false;
+        messageController.text = '';
         notifyListeners();
       }
     });

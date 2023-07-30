@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kyo/controllers/email_genearator_controller.dart';
 import 'package:kyo/screens/mail page/generating_page.dart';
+import 'package:kyo/screens/models/email.dart';
 import 'package:provider/provider.dart';
 
 class Mail extends StatelessWidget {
-  String email;
+  Email email;
   Mail({required this.email});
   @override
   Widget build(BuildContext context) {
@@ -14,18 +15,18 @@ class Mail extends StatelessWidget {
         leading: CircleAvatar(
           child: Text('A'),
         ),
-        title: Text('Email Title'),
+        title: Text(email.subject!),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "imed mokrane",
+              email.senderName!,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              email,
+              email.message!,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),

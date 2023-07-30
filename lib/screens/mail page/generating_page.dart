@@ -14,7 +14,7 @@ DataService dataService = DataService();
 String first_email = email;
 
 class GenPage extends StatefulWidget {
-  String message;
+  Email message;
   GenPage({required this.message});
 
   @override
@@ -23,7 +23,7 @@ class GenPage extends StatefulWidget {
 
 class _GenPage extends State<GenPage> {
   String response = '';
-  String message;
+  Email message;
   _GenPage({required this.message});
 
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class _GenPage extends State<GenPage> {
                             Container(
                               margin: EdgeInsets.fromLTRB(18, 0, 17, 50),
                               child: Text(
-                                message,
+                                message.message!,
                                 style: TextStyle(
                                     fontSize: 10.5.sp,
                                     fontFamily: 'lato regular'),
@@ -126,7 +126,7 @@ class _GenPage extends State<GenPage> {
                                 if (EmailGenerator.emailGenerated) {
                                   emailGenerator.regenrate();
                                 } else {
-                                  emailGenerator.generate(message);
+                                  emailGenerator.generate(message.message!);
                                 }
                               },
                               child: (EmailGenerator.emailGenerated)
@@ -190,8 +190,8 @@ class _GenPage extends State<GenPage> {
                                   child: GestureDetector(
                                       onTap: () {
                                         if (!EmailGenerator.loading) {
-                                          emailGenerator
-                                              .sendRequestEmail(message);
+                                          emailGenerator.sendRequestEmail(
+                                              message.message!);
                                         }
                                       },
                                       child: const Material(
