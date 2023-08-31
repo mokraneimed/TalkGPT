@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:enough_convert/enough_convert.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -9,6 +10,7 @@ class DataService {
   bool isLoading = false;
   Future<String> sendRequest(String prompt) async {
     isLoading = true;
+    final codec = Windows1252Codec(allowInvalid: false);
 
     final response = await http.post(Uri.parse(apiUrl),
         headers: {
@@ -27,7 +29,7 @@ class DataService {
       final data = jsonDecode(response.body);
       final String text = data['choices'][0]['message']['content'];
       print(text);
-      return text;
+      return utf8.decode(text.codeUnits);
     } else {
       throw Exception('Failed to send request');
     }
@@ -35,6 +37,7 @@ class DataService {
 
   Future<String> sendRequestChat(List prompts) async {
     isLoading = true;
+    final codec = Windows1252Codec(allowInvalid: false);
 
     final response = await http.post(Uri.parse(apiUrl),
         headers: {
@@ -51,7 +54,8 @@ class DataService {
       final data = jsonDecode(response.body);
       final String text = data['choices'][0]['message']['content'];
       print(text);
-      return text;
+
+      return utf8.decode(text.codeUnits);
     } else {
       throw Exception('Failed to send request');
     }

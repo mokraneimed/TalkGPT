@@ -6,6 +6,9 @@ class Email {
   String? inReplyTo;
   String? messageID;
   String? refrences;
+  String? threadId;
+  String? photoUrl;
+  int? profileColor;
 
   Email(
       {this.subject,
@@ -14,5 +17,8 @@ class Email {
       this.message,
       this.inReplyTo,
       this.messageID,
-      this.refrences});
+      this.refrences,
+      this.threadId,
+      this.photoUrl,
+      this.profileColor});
 }

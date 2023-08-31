@@ -3,18 +3,35 @@ import 'package:kyo/controllers/email_genearator_controller.dart';
 import 'package:kyo/screens/mail page/generating_page.dart';
 import 'package:kyo/screens/models/email.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
+import '../../colors.dart';
 
 class Mail extends StatelessWidget {
   Email email;
   Mail({required this.email});
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       child: (ListTile(
-        leading: CircleAvatar(
-          child: Text('A'),
-        ),
+        leading: (email.photoUrl == null)
+            ? CircleAvatar(
+                backgroundColor: colors[email.profileColor!],
+                radius: width * 0.06,
+                child: (email.senderName![0] == "\"")
+                    ? Text(
+                        email.senderName![1],
+                        style: TextStyle(fontSize: 17.sp, color: Colors.white),
+                      )
+                    : Text(
+                        email.senderName![0],
+                        style: TextStyle(fontSize: 17.sp, color: Colors.white),
+                      ))
+            : CircleAvatar(
+                radius: width * 0.06,
+                backgroundImage: NetworkImage(email.photoUrl!),
+              ),
         title: Text(email.subject!),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

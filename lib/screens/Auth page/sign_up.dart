@@ -76,7 +76,16 @@ large language model GPT 3.5 Turbo.''',
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12))),
                       onPressed: () {
-                        GoogleService.signInWithGoogle();
+                        try {
+                          GoogleService.signInWithGoogle();
+                          GoogleService.signedIn = true;
+                        } catch (e) {
+                          showDialog(
+                              context: context,
+                              builder: ((context) {
+                                return Text("there is a problem");
+                              }));
+                        }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

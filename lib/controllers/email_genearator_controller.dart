@@ -1,10 +1,12 @@
 import 'package:kyo/emails_request.dart';
+import 'package:kyo/screens/models/email.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as sst;
 
 import '../request.dart';
+import 'package:async/async.dart';
 
 class EmailGenerator extends ChangeNotifier {
   static String response = '';
@@ -18,8 +20,17 @@ class EmailGenerator extends ChangeNotifier {
 
   static sst.SpeechToText speech = sst.SpeechToText();
   static bool isListening = false;
+  static bool sending = false;
+  static bool emailsLoading = false;
+
+  static List emails = [];
+
+  static int legnth = 4;
+
+  static CancelableOperation? cancellableOperation;
 
   void init() {
+    sending = false;
     available = false;
     speech = sst.SpeechToText();
     response = '';
@@ -30,9 +41,36 @@ class EmailGenerator extends ChangeNotifier {
     emailGenerated = false;
     prompts = [];
     isListening = false;
+    emailsLoading = false;
   }
 
-  void sendRequestEmail(String message) async {
+  static Future<dynamic> fromCancelable(Future<dynamic> future) async {
+    cancellableOperation?.cancel();
+    cancellableOperation = CancelableOperation.fromFuture(future, onCancel: () {
+      print('Operation Cancelled');
+    });
+    return cancellableOperation!.value;
+  }
+
+  Future<dynamic> loadMoreEmails() async {
+    emailsLoading = true;
+    notifyListeners();
+    try {
+      await GoogleService.getEmails();
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      emails = GoogleService.emails;
+      if (!GoogleService.isFetching) {
+        emailsLoading = false;
+      }
+      notifyListeners();
+      print("Emails loaded.");
+    }
+    notifyListeners();
+  }
+
+  Future<void> sendRequestEmail(String message) async {
     String prompt = promptController.text;
     loading = true;
     if (responseController.text.isEmpty) {
@@ -69,8 +107,17 @@ class EmailGenerator extends ChangeNotifier {
     }
   }
 
-  void sendEmail() async {
-    await GoogleService.testingEmail("li_mokrane@esi.dz");
+  void sendEmail(Email email) async {
+    sending = true;
+    notifyListeners();
+    try {
+      await GoogleService.testingEmail(email, responseController.text);
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      sending = false;
+      notifyListeners();
+    }
   }
 
   void generate(String message) async {
@@ -82,6 +129,7 @@ class EmailGenerator extends ChangeNotifier {
     notifyListeners();
     try {
       response = await dataService.sendRequestChat(prompts);
+
       responseController.text = response;
     } catch (e) {
       print(e.toString());
