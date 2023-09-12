@@ -13,7 +13,7 @@ import 'package:sizer/sizer.dart' as sizer;
 
 TextEditingController controller = TextEditingController();
 String generatedText = '';
-final recorder = Recorder();
+// final recorder = Recorder();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
