@@ -125,6 +125,7 @@ class _ChatPage extends State<ChatPage> {
                                     borderRadius: BorderRadius.circular(20)),
                                 width: 300,
                                 child: TextField(
+                                  maxLines: null,
                                   cursorColor: Colors.white,
                                   decoration: InputDecoration(
                                       border: InputBorder.none,

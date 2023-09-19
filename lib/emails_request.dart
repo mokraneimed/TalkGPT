@@ -22,10 +22,29 @@ class GoogleService {
   static bool firstFetch = true;
   static bool isFetching = false;
   static bool signedIn = false;
+  static String? photoURL;
+  static String? username;
 
   static int generateRandomNumber() {
     Random random = Random();
     return random.nextInt(8); // Generates a random number between 0 and 7
+  }
+
+  static String removeNewlinesBetweenLength(String text) {
+    List<String> lines = text.split('\n');
+    String finalString = "";
+
+    for (String line in lines) {
+      print(line);
+      finalString += line.trim();
+      if (!(line.length >= 71 && line.length <= 78)) {
+        finalString += '\n';
+      } else {
+        finalString += " ";
+      }
+    }
+
+    return finalString;
   }
 
   static signInSilentlyWithGoogle() async {
@@ -52,6 +71,8 @@ class GoogleService {
 
       user = await FirebaseAuth.instance.signInWithCredential(credential);
       print(user?.user?.displayName);
+      photoURL = FirebaseAuth.instance.currentUser!.photoURL;
+      username = FirebaseAuth.instance.currentUser!.displayName;
       final authClient = await googleUser!.authenticatedClient();
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("type", authClient!.credentials.accessToken.type);
@@ -68,8 +89,10 @@ class GoogleService {
       final header = await googleUser!.currentUser!.authHeaders;
       await prefs.setString("auth", header['Authorization']!);
       await prefs.setString("X-Goog-AuthUser", header['X-Goog-AuthUser']!);
+      return true;
     } catch (e) {
       print('Error signing in with Google: $e');
+      return false;
     }
   }
 
@@ -97,6 +120,8 @@ class GoogleService {
 
       user = await FirebaseAuth.instance.signInWithCredential(credential);
       print(user?.user?.displayName);
+      photoURL = FirebaseAuth.instance.currentUser!.photoURL;
+      username = FirebaseAuth.instance.currentUser!.displayName;
       final authClient = await googleUser!.authenticatedClient();
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("type", authClient!.credentials.accessToken.type);
@@ -235,23 +260,26 @@ class GoogleService {
             } catch (e) {
               refrences = null;
             }
+
             //print(refrences);
             if (parts == null) {
               if (payload.mimeType == "text/plain") {
                 List<int> decodedBytes = base64Url.decode(payload.body!.data!);
 
                 String decodedString = utf8.decode(decodedBytes);
+
                 final Email email = Email(
-                    message: decodedString,
-                    subject: subject,
-                    senderName: _fromInfo[0],
-                    senderEmail: senderEmail[0],
-                    messageID: messageID,
-                    refrences: refrences,
-                    inReplyTo: inReplyTo,
-                    threadId: threadId,
-                    photoUrl: photoUrl,
-                    profileColor: profileColor);
+                  message: decodedString,
+                  subject: subject,
+                  senderName: _fromInfo[0],
+                  senderEmail: senderEmail[0],
+                  messageID: messageID,
+                  refrences: refrences,
+                  inReplyTo: inReplyTo,
+                  threadId: threadId,
+                  photoUrl: photoUrl,
+                  profileColor: profileColor,
+                );
                 _emails.add(email);
                 counter++;
               }
@@ -265,16 +293,17 @@ class GoogleService {
                   String decodedString = utf8.decode(decodedBytes);
 
                   final Email email = Email(
-                      message: decodedString,
-                      subject: subject,
-                      senderName: _fromInfo[0],
-                      senderEmail: senderEmail[0],
-                      messageID: messageID,
-                      refrences: refrences,
-                      inReplyTo: inReplyTo,
-                      threadId: threadId,
-                      photoUrl: photoUrl,
-                      profileColor: profileColor);
+                    message: decodedString,
+                    subject: subject,
+                    senderName: _fromInfo[0],
+                    senderEmail: senderEmail[0],
+                    messageID: messageID,
+                    refrences: refrences,
+                    inReplyTo: inReplyTo,
+                    threadId: threadId,
+                    photoUrl: photoUrl,
+                    profileColor: profileColor,
+                  );
                   _emails.add(email);
                   counter++;
                 }

@@ -17,29 +17,40 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   var _currentIndex = 0;
   bool signedIn = false;
+  bool signError = false;
 
   void signSilent() async {
+    bool? success;
     try {
-      await GoogleService.signInSilentlyWithGoogle();
+      success = await GoogleService.signInSilentlyWithGoogle();
     } catch (e) {
       print(e.toString());
     } finally {
-      setState(() {
-        GoogleService.signedIn = true;
-      });
+      if (success == true) {
+        setState(() {
+          signError = false;
+          GoogleService.signedIn = true;
+        });
+      } else {
+        setState(() {
+          signError = true;
+        });
+      }
     }
   }
 
   @override
   void initState() {
     super.initState();
-    if (!GoogleService.signedIn) {
-      signSilent();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration(milliseconds: 0), () {
+      if (!GoogleService.signedIn) {
+        signSilent();
+      }
+    });
     return (GoogleService.signedIn)
         ? Scaffold(
             bottomNavigationBar: SalomonBottomBar(
@@ -126,25 +137,36 @@ class _HomePage extends State<HomePage> {
             ),
             body: pages[_currentIndex])
         : Scaffold(
-            body: Center(
-                child: Container(
-              height: 400,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset("assets/images/black_logo.png"),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    child: const LoadingIndicator(
-                      indicatorType: Indicator.circleStrokeSpin,
-                      colors: [Color(0xFFF62F53)],
-                      strokeWidth: 2,
-                    ),
+            body: Stack(
+              children: [
+                (signError)
+                    ? const Positioned(
+                        bottom: 10,
+                        right: 0,
+                        left: 0,
+                        child: Text("error in signing"))
+                    : SizedBox(),
+                Center(
+                    child: Container(
+                  height: 400,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset("assets/images/black_logo.png"),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        child: const LoadingIndicator(
+                          indicatorType: Indicator.circleStrokeSpin,
+                          colors: [Color(0xFFF62F53)],
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )),
+                )),
+              ],
+            ),
           );
   }
 }

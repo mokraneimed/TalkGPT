@@ -1,6 +1,8 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kyo/controllers/email_genearator_controller.dart';
+import 'package:kyo/emails_request.dart';
 import 'package:kyo/request.dart';
 import 'package:kyo/screens/models/email.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -66,7 +68,7 @@ class _GenPage extends State<GenPage> {
                                   children: [
                                     (message.photoUrl != null)
                                         ? CircleAvatar(
-                                            radius: width * 0.08,
+                                            radius: width * 0.06,
                                             backgroundImage:
                                                 NetworkImage(message.photoUrl!),
                                           )
@@ -131,10 +133,11 @@ class _GenPage extends State<GenPage> {
                         alignment: Alignment.centerLeft,
                         child: Container(
                           margin: (!EmailGenerator.loading)
-                              ? EdgeInsets.fromLTRB(14, 0, 17, 200)
+                              ? EdgeInsets.fromLTRB(14, 0, 17, 40)
                               : EdgeInsets.fromLTRB(14, 0, 17, 75),
                           child: Text(
-                            message.message!,
+                            GoogleService.removeNewlinesBetweenLength(
+                                message.message!),
                             style: TextStyle(
                                 fontSize: 10.sp, fontFamily: 'lato regular'),
                           ),
@@ -155,31 +158,76 @@ class _GenPage extends State<GenPage> {
                               ),
                             )
                           : (EmailGenerator.response != '')
-                              ? Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(18, 0, 17, 200),
-                                    width: 320,
-                                    child: TextField(
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
+                              ? Column(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: width * 0.03),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          CircleAvatar(
+                                            radius: width * 0.06,
+                                            backgroundImage: NetworkImage(
+                                                GoogleService.photoURL!),
+                                          ),
+                                          SizedBox(
+                                            width: width * 0.03,
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                GoogleService.username!,
+                                                style: TextStyle(
+                                                    fontFamily: 'lato regular'),
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.01,
+                                              ),
+                                              Text(
+                                                "to ${message.senderName}",
+                                                style: TextStyle(
+                                                    fontFamily: 'lato regular',
+                                                    color: Color(0xFF5D5C5D)
+                                                        .withOpacity(0.9)),
+                                              ),
+                                            ],
+                                          )
+                                        ],
                                       ),
-                                      toolbarOptions: const ToolbarOptions(
-                                        copy: true,
-                                        selectAll: true,
-                                        paste: true,
-                                      ),
-                                      readOnly: false,
-                                      maxLines: null,
-                                      controller:
-                                          EmailGenerator.responseController,
-                                      cursorColor: Colors.black,
-                                      style: TextStyle(
-                                          fontSize: 10.5.sp,
-                                          fontFamily: 'lato regular',
-                                          color: Colors.black),
                                     ),
-                                  ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(18, 0, 17, 200),
+                                        child: TextField(
+                                          decoration: const InputDecoration(
+                                            border: InputBorder.none,
+                                          ),
+                                          toolbarOptions: const ToolbarOptions(
+                                            copy: true,
+                                            selectAll: true,
+                                            paste: true,
+                                          ),
+                                          readOnly: false,
+                                          maxLines: null,
+                                          controller:
+                                              EmailGenerator.responseController,
+                                          cursorColor: Colors.black,
+                                          style: TextStyle(
+                                              fontSize: 10.5.sp,
+                                              fontFamily: 'lato regular',
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 )
                               : SizedBox(),
                     ]),

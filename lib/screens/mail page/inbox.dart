@@ -53,7 +53,7 @@ class _Inbox extends State<Inbox> {
               child: Center(
                   child: Text(
                 "Inbox",
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 24, fontFamily: 'lato regular'),
               )),
             ),
             SizedBox(

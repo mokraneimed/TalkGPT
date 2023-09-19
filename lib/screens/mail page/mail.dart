@@ -32,28 +32,33 @@ class Mail extends StatelessWidget {
                 radius: width * 0.06,
                 backgroundImage: NetworkImage(email.photoUrl!),
               ),
-        title: Text(email.subject!),
+        title: Text(
+          email.subject!,
+          style: TextStyle(fontFamily: 'lato regular'),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               email.senderName!,
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+                  fontWeight: FontWeight.bold, fontFamily: 'lato regular'),
             ),
             Text(
               email.message!,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
+              style: TextStyle(fontFamily: 'lato regular'),
             ),
           ],
         ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text('10:45 AM'),
-            Icon(Icons.star_border),
+            Text(
+              "10:45 AM",
+              style: TextStyle(fontFamily: 'lato regular'),
+            ),
           ],
         ),
         onTap: () {
