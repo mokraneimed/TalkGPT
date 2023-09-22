@@ -7,7 +7,7 @@ import 'package:kyo/screens/mail%20page/inbox.dart';
 import 'package:kyo/screens/Home%20page/home.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
-List pages = [LandPage(), Inbox(), ChatPage(), Container()];
+List pages = [LandPage(), Inbox(), ChatPage()];
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,19 +22,23 @@ class _HomePage extends State<HomePage> {
   void signSilent() async {
     bool? success;
     try {
+      setState(() {
+        signError = false;
+      });
       success = await GoogleService.signInSilentlyWithGoogle();
     } catch (e) {
       print(e.toString());
     } finally {
       if (success == true) {
         setState(() {
-          signError = false;
           GoogleService.signedIn = true;
         });
       } else {
         setState(() {
           signError = true;
         });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Problem while signing in. Check connection")));
       }
     }
   }
@@ -42,15 +46,14 @@ class _HomePage extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    if (!GoogleService.signedIn && !signError) {
+      signSilent();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(milliseconds: 0), () {
-      if (!GoogleService.signedIn) {
-        signSilent();
-      }
-    });
+    final width = MediaQuery.of(context).size.width;
     return (GoogleService.signedIn)
         ? Scaffold(
             bottomNavigationBar: SalomonBottomBar(
@@ -73,7 +76,8 @@ class _HomePage extends State<HomePage> {
                         ),
                   title: Text(
                     "Home",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white, fontFamily: 'lato regular'),
                   ),
                 ),
 
@@ -92,7 +96,8 @@ class _HomePage extends State<HomePage> {
                         ),
                   title: Text(
                     "Mail",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white, fontFamily: 'lato regular'),
                   ),
                 ),
 
@@ -111,41 +116,26 @@ class _HomePage extends State<HomePage> {
                         ),
                   title: Text(
                     "Chat",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white, fontFamily: 'lato regular'),
                   ),
                 ),
 
                 /// Profile
-                SalomonBottomBarItem(
-                  icon: (_currentIndex == 3)
-                      ? Image.asset(
-                          "assets/images/sel_profile.png",
-                          height: 24,
-                          width: 24,
-                        )
-                      : Image.asset(
-                          "assets/images/uns_profile.png",
-                          height: 24,
-                          width: 24,
-                        ),
-                  title: Text(
-                    "Profile",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
               ],
             ),
             body: pages[_currentIndex])
         : Scaffold(
             body: Stack(
               children: [
-                (signError)
-                    ? const Positioned(
-                        bottom: 10,
-                        right: 0,
-                        left: 0,
-                        child: Text("error in signing"))
-                    : SizedBox(),
+                // (signError)
+                //     ? const Positioned(
+                //         bottom: 10,
+                //         child: Align(
+                //             alignment: Alignment.center,
+                //             child: SnackBar(
+                //                 content: Text("Error while signing in"))))
+                //     : SizedBox(),
                 Center(
                     child: Container(
                   height: 400,
@@ -153,15 +143,29 @@ class _HomePage extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset("assets/images/black_logo.png"),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        child: const LoadingIndicator(
-                          indicatorType: Indicator.circleStrokeSpin,
-                          colors: [Color(0xFFF62F53)],
-                          strokeWidth: 2,
-                        ),
-                      ),
+                      (!signError)
+                          ? Container(
+                              height: 40,
+                              width: 40,
+                              child: const LoadingIndicator(
+                                indicatorType: Indicator.circleStrokeSpin,
+                                colors: [Color(0xFFF62F53)],
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                signSilent();
+                              },
+                              child: CircleAvatar(
+                                radius: width * 0.1,
+                                backgroundColor: const Color(0xFFF62F53),
+                                child: Image.asset(
+                                  "assets/images/refresh.png",
+                                  width: width * 0.1,
+                                ),
+                              ),
+                            )
                     ],
                   ),
                 )),

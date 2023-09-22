@@ -133,8 +133,10 @@ class _GenPage extends State<GenPage> {
                         alignment: Alignment.centerLeft,
                         child: Container(
                           margin: (!EmailGenerator.loading)
-                              ? EdgeInsets.fromLTRB(14, 0, 17, 40)
-                              : EdgeInsets.fromLTRB(14, 0, 17, 75),
+                              ? (EmailGenerator.response == '')
+                                  ? const EdgeInsets.fromLTRB(14, 0, 17, 200)
+                                  : const EdgeInsets.fromLTRB(14, 0, 17, 40)
+                              : const EdgeInsets.fromLTRB(14, 0, 17, 75),
                           child: Text(
                             GoogleService.removeNewlinesBetweenLength(
                                 message.message!),

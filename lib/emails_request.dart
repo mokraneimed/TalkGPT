@@ -306,6 +306,36 @@ class GoogleService {
                   );
                   _emails.add(email);
                   counter++;
+                  break;
+                } else {
+                  final parts_ = part.parts;
+                  if (parts_ != null) {
+                    for (final part_ in parts_) {
+                      final body_ = part_.body;
+                      final data_ = body_!.data;
+                      final mimeType_ = part_.mimeType;
+                      if (mimeType_ == "text/plain") {
+                        List<int> decodedBytes_ = base64Url.decode(data_!);
+                        String decodedString_ = utf8.decode(decodedBytes_);
+
+                        final Email email = Email(
+                          message: decodedString_,
+                          subject: subject,
+                          senderName: _fromInfo[0],
+                          senderEmail: senderEmail[0],
+                          messageID: messageID,
+                          refrences: refrences,
+                          inReplyTo: inReplyTo,
+                          threadId: threadId,
+                          photoUrl: photoUrl,
+                          profileColor: profileColor,
+                        );
+                        _emails.add(email);
+                        counter++;
+                        break;
+                      }
+                    }
+                  }
                 }
               }
             }

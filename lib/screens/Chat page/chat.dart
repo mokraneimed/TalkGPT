@@ -67,7 +67,7 @@ class _ChatPage extends State<ChatPage> {
                 child: Center(
                     child: Text(
                   "Voice GPT",
-                  style: TextStyle(fontSize: 24),
+                  style: TextStyle(fontSize: 24, fontFamily: 'lato regular'),
                 )),
               ),
               Expanded(
@@ -90,7 +90,9 @@ class _ChatPage extends State<ChatPage> {
                                     child: Text(
                                       ChatController.questions[index - 1],
                                       style: TextStyle(
-                                          color: Colors.white, fontSize: 20),
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontFamily: 'lato regular'),
                                     ),
                                   ),
                                 ),
@@ -109,7 +111,9 @@ class _ChatPage extends State<ChatPage> {
                                     child: Text(
                                       ChatController.responses[index - 1],
                                       style: TextStyle(
-                                          color: Colors.black, fontSize: 20),
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontFamily: 'lato regular'),
                                     ),
                                   ),
                                 )
@@ -130,11 +134,14 @@ class _ChatPage extends State<ChatPage> {
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
                                       hintText: "tap mic or type",
-                                      hintStyle:
-                                          TextStyle(color: Colors.white54)),
+                                      hintStyle: TextStyle(
+                                          color: Colors.white54,
+                                          fontFamily: 'lato regular')),
                                   controller: ChatController.messageController,
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: 'lato regular'),
                                 ),
                               ),
                             );

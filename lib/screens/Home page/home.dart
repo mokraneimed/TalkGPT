@@ -5,8 +5,10 @@ import 'package:kyo/screens/Chat%20page/chat.dart';
 class LandPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Color.fromARGB(255, 27, 26, 26),
         body: Column(
           children: [
             Stack(
@@ -20,31 +22,28 @@ class LandPage extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: 45,
+                  top: 52,
                   child: Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 30,
                       ),
                       CircleAvatar(
                         backgroundColor: Colors.blue,
-                        radius: 25,
+                        radius: width * 0.06,
+                        backgroundImage: NetworkImage(GoogleService.photoURL!),
                       ),
                       SizedBox(width: 15),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Imed Edddine Mokrane',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            GoogleService.username!,
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'lato regular'),
                           ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text("Student")
                         ],
                       ),
                       SizedBox(width: 40),
@@ -57,17 +56,23 @@ class LandPage extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                    left: 110,
+                    left: width * 0.28,
                     bottom: 90,
-                    child: Image.asset("assets/images/logo.png")),
+                    child: SizedBox(
+                        height: height * 0.06,
+                        child: Image.asset(
+                          "assets/images/black_logo.png",
+                          fit: BoxFit.contain,
+                        ))),
                 Positioned(
                     bottom: 30,
                     left: 55,
                     child: Container(
                       width: 300,
-                      child: Text(
+                      child: const Text(
                         "Engage in a suggested discussion by the Virtual Assistant based on your interests. ",
-                        style: TextStyle(fontSize: 16),
+                        style:
+                            TextStyle(fontSize: 16, fontFamily: "lato regular"),
                       ),
                     )),
               ],
@@ -83,42 +88,6 @@ class LandPage extends StatelessWidget {
                       fit: BoxFit.fill,
                     ),
                   ),
-                ),
-                Positioned(
-                  bottom: 50,
-                  left: 105,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFF62F53),
-                          fixedSize: const Size(190, 60),
-                          elevation: 10,
-                          shadowColor: Color(0xFFF62F53),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40))),
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return ChatPage();
-                        }));
-                      },
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Get Started",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Icon(
-                            Icons.mic,
-                            color: Colors.white,
-                          )
-                        ],
-                      )),
                 ),
               ],
             ),
