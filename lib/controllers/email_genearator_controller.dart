@@ -29,6 +29,8 @@ class EmailGenerator extends ChangeNotifier {
 
   static CancelableOperation? cancellableOperation;
 
+  static bool loadingError = false;
+
   void init() {
     sending = false;
     available = false;
@@ -53,15 +55,23 @@ class EmailGenerator extends ChangeNotifier {
   }
 
   Future<dynamic> loadMoreEmails() async {
+    bool? success;
+    loadingError = false;
     emailsLoading = true;
     notifyListeners();
     try {
-      await GoogleService.getEmails();
+      success = await GoogleService.getEmails();
     } catch (e) {
       print(e.toString());
     } finally {
-      emails = GoogleService.emails;
-      if (!GoogleService.isFetching) {
+      if (success == true) {
+        emails = GoogleService.emails;
+        if (!GoogleService.isFetching) {
+          emailsLoading = false;
+          loadingError = false;
+        }
+      } else {
+        loadingError = true;
         emailsLoading = false;
       }
       notifyListeners();

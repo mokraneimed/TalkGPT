@@ -155,7 +155,7 @@ class GoogleService {
     }
   }
 
-  static Future<List> getEmails() async {
+  static getEmails() async {
     List _emails = [];
     if (!isFetching) {
       isFetching = true;
@@ -185,7 +185,7 @@ class GoogleService {
         final peopleApi = PeopleServiceApi(newClient);
         final email = FirebaseAuth.instance.currentUser?.email;
 
-        while (counter < 20) {
+        while (counter < 10) {
           final messages_ids = await gmailApi.users.messages.list(email!,
               maxResults: maxResults, q: "in:inbox", pageToken: lastToken);
 
@@ -346,12 +346,13 @@ class GoogleService {
         }
       } catch (e) {
         print(e.toString());
+        return false;
       } finally {
         isFetching = false;
         emails.addAll(_emails);
       }
     }
-    return emails;
+    return true;
   }
 
   static Future<void> testingEmail(Email email, String mailResponse) async {

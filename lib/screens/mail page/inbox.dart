@@ -29,6 +29,7 @@ class _Inbox extends State<Inbox> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Consumer<EmailGenerator>(builder: (context, emailGenerator, child) {
       if ((fetch) /*&& (GoogleService.firstFetch)*/) {
         Future.delayed(Duration(milliseconds: 0), () {
@@ -134,7 +135,21 @@ class _Inbox extends State<Inbox> {
                                   ),
                                 ),
                               )
-                            : const SizedBox()
+                            : (EmailGenerator.loadingError)
+                                ? GestureDetector(
+                                    onTap: () async {
+                                      await emailGenerator.loadMoreEmails();
+                                    },
+                                    child: CircleAvatar(
+                                      radius: width * 0.06,
+                                      backgroundColor: const Color(0xFFF62F53),
+                                      child: Image.asset(
+                                        "assets/images/refresh.png",
+                                        width: width * 0.06,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox()
                         : GestureDetector(
                             onTap: () {},
                             child: Mail(
