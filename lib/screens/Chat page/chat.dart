@@ -161,7 +161,7 @@ class _ChatPage extends State<ChatPage> {
                   GestureDetector(
                     onTap: () async {
                       if (!isLoading) {
-                        chatController.sendRequest();
+                        chatController.sendRequest(context);
                       }
                     },
                     child: (!ChatController.isLoading)

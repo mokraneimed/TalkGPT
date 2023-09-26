@@ -10,7 +10,7 @@ class ChatController extends ChangeNotifier {
   static bool isLoading = false;
   static TextEditingController messageController = TextEditingController();
 
-  void sendRequest() async {
+  void sendRequest(BuildContext context) async {
     String prompt = messageController.text;
     isLoading = true;
     notifyListeners();
@@ -21,11 +21,21 @@ class ChatController extends ChangeNotifier {
         response = await dataService.sendRequestChat(prompts);
       } catch (e) {
       } finally {
-        responses.insert(0, response);
-        prompts.add({"role": "system", "content": '$response'});
-        isLoading = false;
-        messageController.text = '';
-        notifyListeners();
+        if (response != '') {
+          responses.insert(0, response);
+          prompts.add({"role": "system", "content": '$response'});
+          isLoading = false;
+          messageController.text = '';
+          notifyListeners();
+        } else {
+          prompts.removeLast();
+          questions.removeAt(0);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                  "Error while regenerating the response. Check connection, hadi t333")));
+          isLoading = false;
+          notifyListeners();
+        }
       }
     });
   }
