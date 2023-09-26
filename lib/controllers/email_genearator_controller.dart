@@ -30,6 +30,7 @@ class EmailGenerator extends ChangeNotifier {
   static CancelableOperation? cancellableOperation;
 
   static bool loadingError = false;
+  static bool successSent = false;
 
   void init() {
     sending = false;
@@ -44,6 +45,7 @@ class EmailGenerator extends ChangeNotifier {
     prompts = [];
     isListening = false;
     emailsLoading = false;
+    successSent = false;
   }
 
   static Future<dynamic> fromCancelable(Future<dynamic> future) async {
@@ -80,7 +82,7 @@ class EmailGenerator extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendRequestEmail(String message) async {
+  Future<void> sendRequestEmail(String message, BuildContext context) async {
     String prompt = promptController.text;
     loading = true;
     if (responseController.text.isEmpty) {
@@ -95,10 +97,19 @@ class EmailGenerator extends ChangeNotifier {
     } catch (e) {
       print(e.toString());
     } finally {
-      loading = false;
-      emailGenerated = true;
-      prompts.add({"role": "system", "content": '$response'});
-      notifyListeners();
+      if (response != '') {
+        responseController.text = response;
+        loading = false;
+        prompts.add({"role": "system", "content": '$response'});
+        notifyListeners();
+      } else {
+        loading = false;
+        prompts.removeLast();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                "Error while regenerating the response. Check connection, hadi t333")));
+        notifyListeners();
+      }
     }
   }
 
@@ -117,20 +128,27 @@ class EmailGenerator extends ChangeNotifier {
     }
   }
 
-  void sendEmail(Email email) async {
+  void sendEmail(Email email, BuildContext context) async {
     sending = true;
+    bool? status;
     notifyListeners();
     try {
-      await GoogleService.testingEmail(email, responseController.text);
+      status = await GoogleService.testingEmail(email, responseController.text);
     } catch (e) {
       print(e.toString());
     } finally {
       sending = false;
+      if (status == false) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Error while sending. Check connection")));
+      } else {
+        successSent = true;
+      }
       notifyListeners();
     }
   }
 
-  void generate(String message) async {
+  void generate(String message, BuildContext context) async {
     loading = true;
     prompts.add({
       "role": "user",
@@ -139,31 +157,49 @@ class EmailGenerator extends ChangeNotifier {
     notifyListeners();
     try {
       response = await dataService.sendRequestChat(prompts);
-
       responseController.text = response;
     } catch (e) {
       print(e.toString());
     } finally {
-      loading = false;
-      emailGenerated = true;
-      prompts.add({"role": "system", "content": '$response'});
-      notifyListeners();
+      if (response != '') {
+        loading = false;
+        emailGenerated = true;
+        prompts.add({"role": "system", "content": '$response'});
+        notifyListeners();
+      } else {
+        loading = false;
+        prompts.removeLast();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content:
+                Text("Error while generating the response. Check connection")));
+        notifyListeners();
+      }
     }
   }
 
-  void regenrate() async {
+  void regenrate(BuildContext context) async {
     loading = true;
     prompts.add({"role": "user", "content": 'Regenrate the response'});
     notifyListeners();
     try {
       response = await dataService.sendRequestChat(prompts);
-      responseController.text = response;
     } catch (e) {
       print(e.toString());
     } finally {
-      loading = false;
-      prompts.add({"role": "system", "content": '$response'});
-      notifyListeners();
+      if (response != '') {
+        responseController.text = response;
+        loading = false;
+        prompts.add({"role": "system", "content": '$response'});
+
+        notifyListeners();
+      } else {
+        loading = false;
+        prompts.removeLast();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                "Error while regenerating the response. Check connection, hadi t333")));
+        notifyListeners();
+      }
     }
   }
 }

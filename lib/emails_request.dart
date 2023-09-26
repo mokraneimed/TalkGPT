@@ -355,7 +355,7 @@ class GoogleService {
     return true;
   }
 
-  static Future<void> testingEmail(Email email, String mailResponse) async {
+  static Future<bool> testingEmail(Email email, String mailResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, String> header = {
       "Authorization": prefs.getString("auth")!,
@@ -404,17 +404,24 @@ ${message}''';
     String url =
         'https://www.googleapis.com/gmail/v1/users/' + from! + '/messages/send';
 
-    final http.Response response = await http.post(
-      Uri.parse(url), // Convert the URL string to a Uri object
-      headers: header,
-      body: body,
-    );
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(url), // Convert the URL string to a Uri object
+        headers: header,
+        body: body,
+      );
 
-    if (response.statusCode != 200) {
-      print('error: ' + response.statusCode.toString());
-    } else {
-      final Map<String, dynamic> data = json.decode(response.body);
-      print('ok: ' + response.statusCode.toString());
+      if (response.statusCode != 200) {
+        print('error: ' + response.statusCode.toString());
+        return false;
+      } else {
+        final Map<String, dynamic> data = json.decode(response.body);
+        print('ok: ' + response.statusCode.toString());
+        return true;
+      }
+    } catch (e) {
+      print("error while sending. Check connection");
+      return false;
     }
   }
 

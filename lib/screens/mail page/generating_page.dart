@@ -133,7 +133,7 @@ class _GenPage extends State<GenPage> {
                         alignment: Alignment.centerLeft,
                         child: Container(
                           margin: (!EmailGenerator.loading)
-                              ? (EmailGenerator.response == '')
+                              ? (EmailGenerator.responseController.text.isEmpty)
                                   ? const EdgeInsets.fromLTRB(14, 0, 17, 200)
                                   : const EdgeInsets.fromLTRB(14, 0, 17, 40)
                               : const EdgeInsets.fromLTRB(14, 0, 17, 75),
@@ -159,7 +159,7 @@ class _GenPage extends State<GenPage> {
                                 ),
                               ),
                             )
-                          : (EmailGenerator.response != '')
+                          : (EmailGenerator.responseController.text.isNotEmpty)
                               ? Column(
                                   children: [
                                     Container(
@@ -254,9 +254,10 @@ class _GenPage extends State<GenPage> {
                                       borderRadius: BorderRadius.circular(12))),
                               onPressed: () {
                                 if (EmailGenerator.emailGenerated) {
-                                  emailGenerator.regenrate();
+                                  emailGenerator.regenrate(context);
                                 } else {
-                                  emailGenerator.generate(message.message!);
+                                  emailGenerator.generate(
+                                      message.message!, context);
                                 }
                               },
                               child: (EmailGenerator.emailGenerated)
@@ -270,30 +271,36 @@ class _GenPage extends State<GenPage> {
                                           fontFamily: 'lato regular'))),
                           SizedBox(width: width * 0.1),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: (EmailGenerator
-                                        .responseController.text.isNotEmpty)
-                                    ? Colors.white
-                                    : Colors.grey[400],
-                                fixedSize: const Size(120, 40),
-                                elevation: 10,
-                                shadowColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12))),
-                            onPressed: () {
-                              if (EmailGenerator
-                                  .responseController.text.isNotEmpty) {
-                                emailGenerator.sendEmail(message);
-                              }
-                            },
-                            child: Text("Send",
-                                style: TextStyle(
-                                    fontFamily: 'lato regular',
-                                    color: (EmailGenerator
-                                            .responseController.text.isNotEmpty)
-                                        ? Color(0xFFF62F53)
-                                        : Colors.black)),
-                          )
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: (EmailGenerator
+                                          .responseController.text.isNotEmpty)
+                                      ? Colors.white
+                                      : Colors.grey[400],
+                                  fixedSize: const Size(120, 40),
+                                  elevation: 10,
+                                  shadowColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12))),
+                              onPressed: () {
+                                if (EmailGenerator
+                                    .responseController.text.isNotEmpty) {
+                                  emailGenerator.sendEmail(message, context);
+                                }
+                              },
+                              child: (!EmailGenerator.sending)
+                                  ? Text("Send",
+                                      style: TextStyle(
+                                          fontFamily: 'lato regular',
+                                          color: (EmailGenerator
+                                                  .responseController
+                                                  .text
+                                                  .isNotEmpty)
+                                              ? Color(0xFFF62F53)
+                                              : Colors.black))
+                                  : const LoadingIndicator(
+                                      indicatorType: Indicator.ballPulseSync,
+                                      colors: [Color(0xFFF62F53)],
+                                    ))
                         ],
                       ),
                       SizedBox(
@@ -311,9 +318,13 @@ class _GenPage extends State<GenPage> {
                                     borderRadius: BorderRadius.circular(30)),
                                 width: 250,
                                 child: TextField(
+                                  cursorColor: Colors.black,
                                   controller: EmailGenerator.promptController,
                                   maxLines: 2,
                                   decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
                                     hintStyle:
                                         TextStyle(fontFamily: 'lato regular'),
                                     hintText: "type prompt or use mic",
@@ -330,7 +341,7 @@ class _GenPage extends State<GenPage> {
                                       onTap: () {
                                         if (!EmailGenerator.loading) {
                                           emailGenerator.sendRequestEmail(
-                                              message.message!);
+                                              message.message!, context);
                                         }
                                       },
                                       child: const Material(
