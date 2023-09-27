@@ -9,6 +9,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../colors.dart';
+import 'package:intl/intl.dart';
 
 String email =
     "Greetings,\n\nWe’re delighted to have you as an accepted participant for JunctionX Algiers this year.  This edition of Junction is hybrid meaning that it is divided into two parts, the first will be online and will go on from Thursday evening March 9th throughout the weekend to Saturday night March 11th. The teams with the best projects will then be selected to participate in the physical event that will happen at ICT Maghreb at the Palace of Culture Moufdi Zakaria on March 14-16th 2023.";
@@ -119,7 +120,10 @@ class _GenPage extends State<GenPage> {
                                   ],
                                 ),
                                 Text(
-                                  "Feb 2",
+                                  (message.date!.isAfter(DateTime.now()
+                                          .add(const Duration(hours: -12))))
+                                      ? "${message.date!.hour.toString().padLeft(2, '0')}:${message.date!.minute.toString().padLeft(2, '0')}"
+                                      : "${DateFormat('MMM').format(DateTime(0, message.date!.month))} ${message.date!.day}",
                                   style: TextStyle(
                                       fontFamily: 'lato regular',
                                       color: Color(0xFF5D5C5D)),
@@ -209,12 +213,17 @@ class _GenPage extends State<GenPage> {
                                             ],
                                           ),
                                           (EmailGenerator.successSent)
-                                              ? const Text(
-                                                  "Sent: Feb 2",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'lato regular',
-                                                      color: Color(0xFF5D5C5D)),
+                                              ? Container(
+                                                  margin: EdgeInsets.only(
+                                                      right: width * 0.01),
+                                                  child: const Text(
+                                                    "Sent",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'lato regular',
+                                                        color:
+                                                            Color(0xFF5D5C5D)),
+                                                  ),
                                                 )
                                               : const SizedBox()
                                         ],

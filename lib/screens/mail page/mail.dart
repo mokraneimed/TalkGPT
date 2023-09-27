@@ -5,6 +5,7 @@ import 'package:kyo/screens/models/email.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../colors.dart';
+import 'package:intl/intl.dart';
 
 class Mail extends StatelessWidget {
   Email email;
@@ -56,7 +57,10 @@ class Mail extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              "10:45 AM",
+              (email.date!
+                      .isAfter(DateTime.now().add(const Duration(hours: -12))))
+                  ? "${email.date!.hour.toString().padLeft(2, '0')}:${email.date!.minute.toString().padLeft(2, '0')}"
+                  : "${DateFormat('MMM').format(DateTime(0, email.date!.month))} ${email.date!.day}",
               style: TextStyle(fontFamily: 'lato regular'),
             ),
           ],

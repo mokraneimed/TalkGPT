@@ -292,17 +292,17 @@ class GoogleService {
 
                 print("Local DateTime: $parsedDateTime");
                 final Email email = Email(
-                  message: decodedString,
-                  subject: subject,
-                  senderName: _fromInfo[0],
-                  senderEmail: senderEmail[0],
-                  messageID: messageID,
-                  refrences: refrences,
-                  inReplyTo: inReplyTo,
-                  threadId: threadId,
-                  photoUrl: photoUrl,
-                  profileColor: profileColor,
-                );
+                    message: decodedString,
+                    subject: subject,
+                    senderName: _fromInfo[0],
+                    senderEmail: senderEmail[0],
+                    messageID: messageID,
+                    refrences: refrences,
+                    inReplyTo: inReplyTo,
+                    threadId: threadId,
+                    photoUrl: photoUrl,
+                    profileColor: profileColor,
+                    date: parsedDateTime);
                 _emails.add(email);
                 counter++;
               }
@@ -317,17 +317,17 @@ class GoogleService {
 
                   print("Local DateTime: $parsedDateTime");
                   final Email email = Email(
-                    message: decodedString,
-                    subject: subject,
-                    senderName: _fromInfo[0],
-                    senderEmail: senderEmail[0],
-                    messageID: messageID,
-                    refrences: refrences,
-                    inReplyTo: inReplyTo,
-                    threadId: threadId,
-                    photoUrl: photoUrl,
-                    profileColor: profileColor,
-                  );
+                      message: decodedString,
+                      subject: subject,
+                      senderName: _fromInfo[0],
+                      senderEmail: senderEmail[0],
+                      messageID: messageID,
+                      refrences: refrences,
+                      inReplyTo: inReplyTo,
+                      threadId: threadId,
+                      photoUrl: photoUrl,
+                      profileColor: profileColor,
+                      date: parsedDateTime);
                   _emails.add(email);
                   counter++;
                   break;
@@ -344,17 +344,17 @@ class GoogleService {
 
                         print("Local DateTime: $parsedDateTime");
                         final Email email = Email(
-                          message: decodedString_,
-                          subject: subject,
-                          senderName: _fromInfo[0],
-                          senderEmail: senderEmail[0],
-                          messageID: messageID,
-                          refrences: refrences,
-                          inReplyTo: inReplyTo,
-                          threadId: threadId,
-                          photoUrl: photoUrl,
-                          profileColor: profileColor,
-                        );
+                            message: decodedString_,
+                            subject: subject,
+                            senderName: _fromInfo[0],
+                            senderEmail: senderEmail[0],
+                            messageID: messageID,
+                            refrences: refrences,
+                            inReplyTo: inReplyTo,
+                            threadId: threadId,
+                            photoUrl: photoUrl,
+                            profileColor: profileColor,
+                            date: parsedDateTime);
                         _emails.add(email);
                         counter++;
                         break;
