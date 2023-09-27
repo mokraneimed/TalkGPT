@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -13,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kyo/screens/models/email.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:googleapis/people/v1.dart';
+import 'package:intl/intl.dart';
 
 class GoogleService {
   static List emails = [];
@@ -262,12 +264,33 @@ class GoogleService {
             }
 
             //print(refrences);
+
+            String? stringDate;
+            try {
+              stringDate = payload.headers!
+                  .firstWhere((header) => header.name == "Date")
+                  .value;
+            } catch (e) {
+              stringDate = null;
+            }
+            List<String> splits = stringDate!.split(' ');
+            String offset = splits[5];
+            offset = offset.substring(0, 3);
+            DateFormat dateFormat =
+                DateFormat("EEE, dd MMM yyyy HH:mm:ss Z", 'en_US');
+            stringDate = stringDate.replaceAll(RegExp(r'\([^)]*\)'), '').trim();
+            DateTime parsedDateTime = dateFormat.parse(stringDate);
+            parsedDateTime = parsedDateTime.add(Duration(
+                hours:
+                    DateTime.now().timeZoneOffset.inHours - int.parse(offset)));
+
             if (parts == null) {
               if (payload.mimeType == "text/plain") {
                 List<int> decodedBytes = base64Url.decode(payload.body!.data!);
 
                 String decodedString = utf8.decode(decodedBytes);
 
+                print("Local DateTime: $parsedDateTime");
                 final Email email = Email(
                   message: decodedString,
                   subject: subject,
@@ -292,6 +315,7 @@ class GoogleService {
                   List<int> decodedBytes = base64Url.decode(data!);
                   String decodedString = utf8.decode(decodedBytes);
 
+                  print("Local DateTime: $parsedDateTime");
                   final Email email = Email(
                     message: decodedString,
                     subject: subject,
@@ -318,6 +342,7 @@ class GoogleService {
                         List<int> decodedBytes_ = base64Url.decode(data_!);
                         String decodedString_ = utf8.decode(decodedBytes_);
 
+                        print("Local DateTime: $parsedDateTime");
                         final Email email = Email(
                           message: decodedString_,
                           subject: subject,

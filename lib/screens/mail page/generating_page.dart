@@ -167,39 +167,56 @@ class _GenPage extends State<GenPage> {
                                           horizontal: width * 0.03),
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          CircleAvatar(
-                                            radius: width * 0.06,
-                                            backgroundImage: NetworkImage(
-                                                GoogleService.photoURL!),
-                                          ),
-                                          SizedBox(
-                                            width: width * 0.03,
-                                          ),
-                                          Column(
+                                          Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                GoogleService.username!,
-                                                style: TextStyle(
-                                                    fontFamily: 'lato regular'),
+                                              CircleAvatar(
+                                                radius: width * 0.06,
+                                                backgroundImage: NetworkImage(
+                                                    GoogleService.photoURL!),
                                               ),
                                               SizedBox(
-                                                height: height * 0.01,
+                                                width: width * 0.03,
                                               ),
-                                              Text(
-                                                "to ${message.senderName}",
-                                                style: TextStyle(
-                                                    fontFamily: 'lato regular',
-                                                    color: Color(0xFF5D5C5D)
-                                                        .withOpacity(0.9)),
-                                              ),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    GoogleService.username!,
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'lato regular'),
+                                                  ),
+                                                  SizedBox(
+                                                    height: height * 0.01,
+                                                  ),
+                                                  Text(
+                                                    "to ${message.senderName}",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'lato regular',
+                                                        color: Color(0xFF5D5C5D)
+                                                            .withOpacity(0.9)),
+                                                  ),
+                                                ],
+                                              )
                                             ],
-                                          )
+                                          ),
+                                          (EmailGenerator.successSent)
+                                              ? const Text(
+                                                  "Sent: Feb 2",
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'lato regular',
+                                                      color: Color(0xFF5D5C5D)),
+                                                )
+                                              : const SizedBox()
                                         ],
                                       ),
                                     ),
