@@ -40,6 +40,8 @@ class MyApp extends StatelessWidget {
             title: 'Flutter Demo',
             theme: ThemeData(
               primarySwatch: Colors.blue,
+              colorScheme: ColorScheme.fromSwatch()
+                  .copyWith(secondary: Color(0xFFF62F53)),
             ),
             home: StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),

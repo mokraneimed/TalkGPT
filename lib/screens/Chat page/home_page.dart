@@ -6,6 +6,7 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:kyo/screens/mail%20page/inbox.dart';
 import 'package:kyo/screens/Home%20page/home.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:sizer/sizer.dart';
 
 List pages = [LandPage(), Inbox(), ChatPage()];
 
@@ -54,6 +55,7 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return (GoogleService.signedIn)
         ? Scaffold(
             bottomNavigationBar: SalomonBottomBar(
@@ -66,18 +68,20 @@ class _HomePage extends State<HomePage> {
                   icon: (_currentIndex == 0)
                       ? Image.asset(
                           "assets/images/sel_home.png",
-                          height: 24,
-                          width: 24,
+                          height: height * 0.03,
+                          width: height * 0.03,
                         )
                       : Image.asset(
                           "assets/images/uns_home.png",
-                          height: 24,
-                          width: 24,
+                          height: height * 0.03,
+                          width: height * 0.03,
                         ),
                   title: Text(
                     "Home",
                     style: TextStyle(
-                        color: Colors.white, fontFamily: 'lato regular'),
+                        color: Colors.white,
+                        fontFamily: 'lato regular',
+                        fontSize: 11.sp),
                   ),
                 ),
 
@@ -86,18 +90,20 @@ class _HomePage extends State<HomePage> {
                   icon: (_currentIndex == 1)
                       ? Image.asset(
                           "assets/images/sel_mail.png",
-                          height: 24,
-                          width: 24,
+                          height: height * 0.03,
+                          width: height * 0.03,
                         )
                       : Image.asset(
                           "assets/images/uns_mail.png",
-                          height: 24,
-                          width: 24,
+                          height: height * 0.03,
+                          width: height * 0.03,
                         ),
                   title: Text(
                     "Mail",
                     style: TextStyle(
-                        color: Colors.white, fontFamily: 'lato regular'),
+                        color: Colors.white,
+                        fontFamily: 'lato regular',
+                        fontSize: 11.sp),
                   ),
                 ),
 
@@ -106,18 +112,20 @@ class _HomePage extends State<HomePage> {
                   icon: (_currentIndex == 2)
                       ? Image.asset(
                           "assets/images/sel_robot.png",
-                          height: 24,
-                          width: 24,
+                          height: height * 0.03,
+                          width: height * 0.03,
                         )
                       : Image.asset(
                           "assets/images/uns_chat.png",
-                          height: 24,
-                          width: 24,
+                          height: height * 0.03,
+                          width: height * 0.03,
                         ),
                   title: Text(
                     "Chat",
                     style: TextStyle(
-                        color: Colors.white, fontFamily: 'lato regular'),
+                        color: Colors.white,
+                        fontFamily: 'lato regular',
+                        fontSize: 11.sp),
                   ),
                 ),
 
@@ -138,15 +146,15 @@ class _HomePage extends State<HomePage> {
                 //     : SizedBox(),
                 Center(
                     child: Container(
-                  height: 400,
+                  height: height * 0.7,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset("assets/images/black_logo.png"),
                       (!signError)
                           ? Container(
-                              height: 40,
-                              width: 40,
+                              height: height * 0.05,
+                              width: height * 0.05,
                               child: const LoadingIndicator(
                                 indicatorType: Indicator.circleStrokeSpin,
                                 colors: [Color(0xFFF62F53)],
