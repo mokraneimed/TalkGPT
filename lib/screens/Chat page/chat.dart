@@ -70,6 +70,8 @@ class _ChatPage extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -78,16 +80,16 @@ class _ChatPage extends State<ChatPage> {
           builder: (context, chatController, children) {
         return Scaffold(
             body: Container(
-          height: 725,
+          height: height * 0.92,
           child: Column(
             children: [
               Container(
                 height: 90,
-                padding: EdgeInsets.only(top: 60),
+                padding: EdgeInsets.only(top: height * 0.07),
                 child: Center(
                     child: Text(
                   "Voice GPT",
-                  style: TextStyle(fontSize: 24, fontFamily: 'lato regular'),
+                  style: TextStyle(fontSize: 18.sp, fontFamily: 'lato regular'),
                 )),
               ),
               Expanded(
@@ -100,18 +102,19 @@ class _ChatPage extends State<ChatPage> {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: Container(
-                                    margin: EdgeInsets.fromLTRB(0, 0, 10, 25),
-                                    padding: EdgeInsets.all(12),
+                                    margin: EdgeInsets.fromLTRB(
+                                        0, 0, width * 0.02, height * 0.02),
+                                    padding: EdgeInsets.all(width * 0.035),
                                     decoration: BoxDecoration(
                                         color: Color(0xFFF62F53),
                                         borderRadius:
                                             BorderRadius.circular(20)),
-                                    width: 300,
+                                    width: width * 0.75,
                                     child: Text(
                                       ChatController.questions[index - 1],
                                       style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 20,
+                                          fontSize: 15.sp,
                                           fontFamily: 'lato regular'),
                                     ),
                                   ),
@@ -119,20 +122,22 @@ class _ChatPage extends State<ChatPage> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Container(
-                                    margin: EdgeInsets.fromLTRB(10, 0, 0, 25),
-                                    padding: EdgeInsets.all(12),
+                                    margin: EdgeInsets.fromLTRB(
+                                        width * 0.02, 0, 0, height * 0.02),
+                                    padding: EdgeInsets.all(width * 0.035),
                                     decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
+                                        borderRadius: BorderRadius.circular(
+                                            width * 0.035),
                                         border: Border.all(
                                             width: 1,
                                             color: Color(0xFFDADADA))),
-                                    width: 300,
+                                    width: width * 0.75,
                                     child: Text(
                                       ChatController.responses[index - 1],
                                       style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 20,
+                                          fontSize: 15.sp,
                                           fontFamily: 'lato regular'),
                                     ),
                                   ),
@@ -142,12 +147,13 @@ class _ChatPage extends State<ChatPage> {
                           : Align(
                               alignment: Alignment.centerRight,
                               child: Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
-                                padding: EdgeInsets.all(12),
+                                margin: EdgeInsets.fromLTRB(
+                                    0, 0, width * 0.02, height * 0.02),
+                                padding: EdgeInsets.all(width * 0.035),
                                 decoration: BoxDecoration(
                                     color: Color(0xFFF62F53),
                                     borderRadius: BorderRadius.circular(20)),
-                                width: 300,
+                                width: width * 0.75,
                                 child: TextField(
                                   maxLines: null,
                                   cursorColor: Colors.white,
@@ -160,7 +166,7 @@ class _ChatPage extends State<ChatPage> {
                                   controller: ChatController.messageController,
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 20,
+                                      fontSize: 15.sp,
                                       fontFamily: 'lato regular'),
                                 ),
                               ),
@@ -174,10 +180,8 @@ class _ChatPage extends State<ChatPage> {
                     itemCount: ChatController.questions.length + 1),
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 100,
-                  ),
                   GestureDetector(
                     onTap: () async {
                       if (!isLoading) {
@@ -198,12 +202,13 @@ class _ChatPage extends State<ChatPage> {
                                 Icons.send,
                                 color: Colors.black,
                               ),
-                              radius: 30.0,
+                              // b9awli 8 hna
+                              radius: width * 0.075,
                             ),
                           )
                         : Container(
-                            height: 40,
-                            width: 40,
+                            height: width * 0.11,
+                            width: width * 0.11,
                             child: const LoadingIndicator(
                               indicatorType: Indicator.circleStrokeSpin,
                               colors: [Color(0xFFF62F53)],
@@ -212,14 +217,14 @@ class _ChatPage extends State<ChatPage> {
                           ),
                   ),
                   SizedBox(
-                    width: 20,
+                    width: width * 0.04,
                   ),
                   GestureDetector(
                     onTap: onListen,
                     child: AvatarGlow(
                       glowColor: Color(0xFFF62F53),
                       animate: _speech.isListening,
-                      endRadius: 60.0,
+                      endRadius: width * 0.14,
                       child: Material(
                         elevation: 8.0,
                         shadowColor: Color(0xFFF62F53),
@@ -230,10 +235,10 @@ class _ChatPage extends State<ChatPage> {
                               : Color(0xFFF62F53),
                           child: Image.asset(
                             "assets/images/mic.png",
-                            height: 24,
-                            width: 24,
+                            height: width * 0.06,
+                            width: width * 0.06,
                           ),
-                          radius: 30.0,
+                          radius: width * 0.075,
                         ),
                       ),
                     ),
