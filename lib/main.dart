@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kyo/controllers/chat_controller.dart';
@@ -5,6 +6,7 @@ import 'package:kyo/controllers/email_genearator_controller.dart';
 import 'package:kyo/recorder.dart';
 import 'package:kyo/emails_request.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:native_ads_flutter/native_ads.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:kyo/screens/Auth page/Auth.dart';
@@ -17,6 +19,7 @@ String generatedText = '';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

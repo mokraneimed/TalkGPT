@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../colors.dart';
 import 'package:intl/intl.dart';
+import 'package:native_ads_flutter/native_ads.dart';
+import 'package:admob_flutter/admob_flutter.dart';
+import 'package:kyo/ads_manager.dart';
 
 String email =
     "Greetings,\n\nWe’re delighted to have you as an accepted participant for JunctionX Algiers this year.  This edition of Junction is hybrid meaning that it is divided into two parts, the first will be online and will go on from Thursday evening March 9th throughout the weekend to Saturday night March 11th. The teams with the best projects will then be selected to participate in the physical event that will happen at ICT Maghreb at the Palace of Culture Moufdi Zakaria on March 14-16th 2023.";
@@ -28,8 +31,31 @@ class GenPage extends StatefulWidget {
 class _GenPage extends State<GenPage> {
   String response = '';
   Email message;
+  final nativeAdController = NativeAdmobController();
+  AdmobInterstitial? interstitialAd;
+
+  @override
+  void initState() {
+    super.initState();
+    interstitialAd = AdmobInterstitial(
+        adUnitId: AdsManager.interstitialAdUnit,
+        listener: (AdmobAdEvent event, Map<String, dynamic>? args) {
+          if (event == AdmobAdEvent.closed) interstitialAd!.load();
+        });
+    interstitialAd!.load();
+    nativeAdController.reloadAd(forceRefresh: true);
+  }
+
+  @override
+  void dispose() {
+    interstitialAd!.dispose();
+    nativeAdController.dispose();
+    super.dispose();
+  }
+
   _GenPage({required this.message});
 
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
@@ -285,14 +311,15 @@ class _GenPage extends State<GenPage> {
                                   emailGenerator.generate(
                                       message.message!, context);
                                 }
+                                interstitialAd!.show();
                               },
                               child: (EmailGenerator.emailGenerated)
-                                  ? Text(
+                                  ? const Text(
                                       "Regenrate",
                                       style:
                                           TextStyle(fontFamily: 'lato regular'),
                                     )
-                                  : Text("Genrate",
+                                  : const Text("Genrate",
                                       style: TextStyle(
                                           fontFamily: 'lato regular'))),
                           SizedBox(width: width * 0.1),
@@ -311,6 +338,7 @@ class _GenPage extends State<GenPage> {
                                 if (EmailGenerator
                                     .responseController.text.isNotEmpty) {
                                   emailGenerator.sendEmail(message, context);
+                                  interstitialAd!.show();
                                 }
                               },
                               child: (!EmailGenerator.sending)
@@ -368,6 +396,7 @@ class _GenPage extends State<GenPage> {
                                         if (!EmailGenerator.loading) {
                                           emailGenerator.sendRequestEmail(
                                               message.message!, context);
+                                          interstitialAd!.show();
                                         }
                                       },
                                       child: const Material(
