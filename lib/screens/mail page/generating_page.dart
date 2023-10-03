@@ -75,7 +75,7 @@ class _GenPage extends State<GenPage> {
                     child: ListView(children: [
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: width * 0.03),
-                        height: 200,
+                        height: height * 0.25,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -164,9 +164,12 @@ class _GenPage extends State<GenPage> {
                         child: Container(
                           margin: (!EmailGenerator.loading)
                               ? (EmailGenerator.responseController.text.isEmpty)
-                                  ? const EdgeInsets.fromLTRB(14, 0, 17, 200)
-                                  : const EdgeInsets.fromLTRB(14, 0, 17, 40)
-                              : const EdgeInsets.fromLTRB(14, 0, 17, 75),
+                                  ? EdgeInsets.fromLTRB(width * 0.04, 0,
+                                      width * 0.04, height * 0.28)
+                                  : EdgeInsets.fromLTRB(width * 0.04, 0,
+                                      width * 0.04, height * 0.045)
+                              : EdgeInsets.fromLTRB(
+                                  width * 0.04, 0, width * 0.04, height * 0.06),
                           child: Text(
                             GoogleService.removeNewlinesBetweenLength(
                                 message.message!),
@@ -179,9 +182,9 @@ class _GenPage extends State<GenPage> {
                           ? Align(
                               alignment: Alignment.center,
                               child: Container(
-                                margin: EdgeInsets.only(bottom: 165),
-                                height: 40,
-                                width: 40,
+                                margin: EdgeInsets.only(bottom: height * 0.21),
+                                height: height * 0.045,
+                                width: height * 0.045,
                                 child: const LoadingIndicator(
                                   indicatorType: Indicator.circleStrokeSpin,
                                   colors: [Color(0xFFF62F53)],
@@ -258,8 +261,11 @@ class _GenPage extends State<GenPage> {
                                     Align(
                                       alignment: Alignment.centerLeft,
                                       child: Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(18, 0, 17, 200),
+                                        margin: EdgeInsets.fromLTRB(
+                                            width * 0.04,
+                                            0,
+                                            width * 0.04,
+                                            height * 0.28),
                                         child: TextField(
                                           decoration: const InputDecoration(
                                             border: InputBorder.none,
@@ -299,7 +305,7 @@ class _GenPage extends State<GenPage> {
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xFFF62F53),
-                                  fixedSize: const Size(120, 40),
+                                  fixedSize: Size(width * 0.3, height * 0.05),
                                   elevation: 10,
                                   shadowColor: Color(0xFFF62F53),
                                   shape: RoundedRectangleBorder(
@@ -329,7 +335,7 @@ class _GenPage extends State<GenPage> {
                                           .responseController.text.isNotEmpty)
                                       ? Colors.white
                                       : Colors.grey[400],
-                                  fixedSize: const Size(120, 40),
+                                  fixedSize: Size(width * 0.3, height * 0.05),
                                   elevation: 10,
                                   shadowColor: Colors.white,
                                   shape: RoundedRectangleBorder(
@@ -358,19 +364,19 @@ class _GenPage extends State<GenPage> {
                         ],
                       ),
                       SizedBox(
-                        height: 8,
+                        height: height * 0.005,
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: 5),
+                        margin: EdgeInsets.only(bottom: height * 0.006),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                                margin: EdgeInsets.only(left: 10),
+                                margin: EdgeInsets.only(left: width * 0.025),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(30)),
-                                width: 250,
+                                width: width * 0.63,
                                 child: TextField(
                                   cursorColor: Colors.black,
                                   controller: EmailGenerator.promptController,
@@ -399,7 +405,7 @@ class _GenPage extends State<GenPage> {
                                           interstitialAd!.show();
                                         }
                                       },
-                                      child: const Material(
+                                      child: Material(
                                         elevation: 10.0,
                                         shadowColor: Color(0xFFF62F53),
                                         shape: CircleBorder(),
@@ -409,7 +415,7 @@ class _GenPage extends State<GenPage> {
                                             Icons.send,
                                             color: Colors.black,
                                           ),
-                                          radius: 25.0,
+                                          radius: width * 0.066,
                                         ),
                                       )),
                                 ),
@@ -418,11 +424,11 @@ class _GenPage extends State<GenPage> {
                                   child: AvatarGlow(
                                     glowColor: Color(0xFFF62F53),
                                     animate: EmailGenerator.speech.isListening,
-                                    endRadius: 40,
+                                    endRadius: width * 0.1,
                                     child: Material(
                                       elevation: 8.0,
                                       shadowColor: Color(0xFFF62F53),
-                                      shape: CircleBorder(),
+                                      shape: const CircleBorder(),
                                       child: CircleAvatar(
                                         backgroundColor:
                                             (!EmailGenerator.speech.isListening)
@@ -430,10 +436,10 @@ class _GenPage extends State<GenPage> {
                                                 : Color(0xFFF62F53),
                                         child: Image.asset(
                                           "assets/images/mic.png",
-                                          height: 19,
-                                          width: 19,
+                                          height: width * 0.055,
+                                          width: width * 0.055,
                                         ),
-                                        radius: 25.0,
+                                        radius: width * 0.066,
                                       ),
                                     ),
                                   ),

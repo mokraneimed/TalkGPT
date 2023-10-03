@@ -13,8 +13,9 @@ class Mail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(bottom: height * 0.011),
       child: (ListTile(
         leading: (email.photoUrl == null)
             ? CircleAvatar(

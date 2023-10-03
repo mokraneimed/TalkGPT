@@ -7,6 +7,7 @@ import 'package:kyo/screens/mail page/generating_page.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:async/async.dart';
+import 'package:sizer/sizer.dart';
 
 class Inbox extends StatefulWidget {
   @override
@@ -54,11 +55,11 @@ class _Inbox extends State<Inbox> {
               child: Center(
                   child: Text(
                 "Inbox",
-                style: TextStyle(fontSize: 24, fontFamily: 'lato regular'),
+                style: TextStyle(fontSize: 18.sp, fontFamily: 'lato regular'),
               )),
             ),
             SizedBox(
-              height: 20,
+              height: height * 0.025,
             ),
             // Padding(
             //   padding: const EdgeInsets.all(10.0),
@@ -123,12 +124,13 @@ class _Inbox extends State<Inbox> {
                   itemBuilder: ((BuildContext context, index) {
                     return (index == GoogleService.emails.length)
                         ? (EmailGenerator.emailsLoading)
-                            ? const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 170),
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: width * 0.435),
                                 child: SizedBox(
-                                  height: 50,
-                                  width: 50,
-                                  child: LoadingIndicator(
+                                  height: height * 0.06,
+                                  width: height * 0.06,
+                                  child: const LoadingIndicator(
                                     indicatorType: Indicator.circleStrokeSpin,
                                     colors: [Color(0xFFF62F53)],
                                     strokeWidth: 2,

@@ -6,6 +6,10 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:kyo/request.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:native_ads_flutter/native_ads.dart';
+import 'package:admob_flutter/admob_flutter.dart';
+import 'package:kyo/ads_manager.dart';
+import 'package:sizer/sizer.dart';
 
 final dataService = DataService();
 
@@ -21,6 +25,8 @@ class _ChatPage extends State<ChatPage> {
   String generatedText = '';
   late sst.SpeechToText _speech;
   bool isListening = false;
+  final nativeAdController = NativeAdmobController();
+  AdmobInterstitial? interstitialAd;
 
   List prompts = [];
   List responses = [];
@@ -46,6 +52,20 @@ class _ChatPage extends State<ChatPage> {
     super.initState();
 
     _speech = sst.SpeechToText();
+    interstitialAd = AdmobInterstitial(
+        adUnitId: AdsManager.interstitialAdUnit,
+        listener: (AdmobAdEvent event, Map<String, dynamic>? args) {
+          if (event == AdmobAdEvent.closed) interstitialAd!.load();
+        });
+    interstitialAd!.load();
+    nativeAdController.reloadAd(forceRefresh: true);
+  }
+
+  @override
+  void dispose() {
+    interstitialAd!.dispose();
+    nativeAdController.dispose();
+    super.dispose();
   }
 
   @override
@@ -162,6 +182,7 @@ class _ChatPage extends State<ChatPage> {
                     onTap: () async {
                       if (!isLoading) {
                         chatController.sendRequest(context);
+                        interstitialAd!.show();
                       }
                     },
                     child: (!ChatController.isLoading)
