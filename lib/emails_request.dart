@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:googleapis/admin/directory_v1.dart';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -26,6 +27,8 @@ class GoogleService {
   static bool signedIn = false;
   static String? photoURL;
   static String? username;
+
+  static bool startSign = false;
 
   static int generateRandomNumber() {
     Random random = Random();
@@ -51,6 +54,62 @@ class GoogleService {
 
   static signInSilentlyWithGoogle() async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final lastSignString = prefs.getString("lastSign");
+      final lastSign = DateTime.parse(lastSignString!);
+      if (lastSign.add(const Duration(hours: 1)).isBefore(DateTime.now())) {
+        print("sign in mn jadid");
+        googleUser = GoogleSignIn(
+          scopes: [
+            GmailApi.gmailReadonlyScope,
+            GmailApi.gmailSendScope,
+            PeopleServiceApi.directoryReadonlyScope
+          ],
+        );
+
+        GoogleSignInAccount? account = await googleUser!.signInSilently();
+
+        GoogleSignInAuthentication? googleAuth = await account?.authentication;
+
+        AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
+        );
+
+        user = await FirebaseAuth.instance.signInWithCredential(credential);
+        print(user?.user?.displayName);
+
+        final authClient = await googleUser!.authenticatedClient();
+        await prefs.setString("lastSign", DateTime.now().toString());
+        await prefs.setString("type", authClient!.credentials.accessToken.type);
+        await prefs.setString("data", authClient.credentials.accessToken.data);
+        await prefs.setString(
+            "expiry", authClient.credentials.accessToken.expiry.toString());
+        if (authClient.credentials.refreshToken != null) {
+          await prefs.setString(
+              "refreshToken", authClient.credentials.refreshToken!);
+        } else {
+          await prefs.setString("refreshToken", "");
+        }
+        await prefs.setStringList("scopes", authClient.credentials.scopes);
+        final header = await googleUser!.currentUser!.authHeaders;
+        await prefs.setString("auth", header['Authorization']!);
+        await prefs.setString("X-Goog-AuthUser", header['X-Goog-AuthUser']!);
+      } else {
+        print("ma drnach");
+      }
+      photoURL = FirebaseAuth.instance.currentUser!.photoURL;
+      username = FirebaseAuth.instance.currentUser!.displayName;
+      return true;
+    } catch (e) {
+      print('Error signing in with Google: $e');
+      return false;
+    }
+  }
+
+  static signInWithGoogle() async {
+    try {
+      startSign = true;
       googleUser = GoogleSignIn(
         scopes: [
           GmailApi.gmailReadonlyScope,
@@ -59,9 +118,9 @@ class GoogleService {
         ],
       );
 
-      GoogleSignInAccount? account = await googleUser!.signInSilently();
-      if (googleUser == null) {
-        throw Exception('Sign in aborted by user');
+      GoogleSignInAccount? account = await googleUser!.signIn();
+      if (account == null) {
+        startSign = false;
       }
 
       GoogleSignInAuthentication? googleAuth = await account?.authentication;
@@ -72,11 +131,13 @@ class GoogleService {
       );
 
       user = await FirebaseAuth.instance.signInWithCredential(credential);
+
       print(user?.user?.displayName);
       photoURL = FirebaseAuth.instance.currentUser!.photoURL;
       username = FirebaseAuth.instance.currentUser!.displayName;
       final authClient = await googleUser!.authenticatedClient();
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("lastSign", DateTime.now().toString());
       await prefs.setString("type", authClient!.credentials.accessToken.type);
       await prefs.setString("data", authClient.credentials.accessToken.data);
       await prefs.setString(
@@ -95,53 +156,6 @@ class GoogleService {
     } catch (e) {
       print('Error signing in with Google: $e');
       return false;
-    }
-  }
-
-  static signInWithGoogle() async {
-    try {
-      googleUser = GoogleSignIn(
-        scopes: [
-          GmailApi.gmailReadonlyScope,
-          GmailApi.gmailSendScope,
-          PeopleServiceApi.directoryReadonlyScope
-        ],
-      );
-
-      GoogleSignInAccount? account = await googleUser!.signIn();
-      if (googleUser == null) {
-        throw Exception('Sign in aborted by user');
-      }
-
-      GoogleSignInAuthentication? googleAuth = await account?.authentication;
-
-      AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      user = await FirebaseAuth.instance.signInWithCredential(credential);
-      print(user?.user?.displayName);
-      photoURL = FirebaseAuth.instance.currentUser!.photoURL;
-      username = FirebaseAuth.instance.currentUser!.displayName;
-      final authClient = await googleUser!.authenticatedClient();
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString("type", authClient!.credentials.accessToken.type);
-      await prefs.setString("data", authClient.credentials.accessToken.data);
-      await prefs.setString(
-          "expiry", authClient.credentials.accessToken.expiry.toString());
-      if (authClient.credentials.refreshToken != null) {
-        await prefs.setString(
-            "refreshToken", authClient.credentials.refreshToken!);
-      } else {
-        await prefs.setString("refreshToken", "");
-      }
-      await prefs.setStringList("scopes", authClient.credentials.scopes);
-      final header = await googleUser!.currentUser!.authHeaders;
-      await prefs.setString("auth", header['Authorization']!);
-      await prefs.setString("X-Goog-AuthUser", header['X-Goog-AuthUser']!);
-    } catch (e) {
-      print('Error signing in with Google: $e');
     }
   }
 

@@ -1,10 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:kyo/emails_request.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:sizer/sizer.dart';
 
-class SignUpPage extends StatelessWidget {
-  final VoidCallback onClicked;
-  const SignUpPage({Key? key, required this.onClicked}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  @override
+  const SignUpPage({super.key});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPage();
+}
+
+class _SignUpPage extends State<SignUpPage> {
+  bool signError = false;
+  bool signing = false;
+
+  void signIn() async {
+    bool? success;
+    try {
+      setState(() {
+        signError = false;
+        signing = true;
+      });
+      success = await GoogleService.signInWithGoogle();
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      if (success == true) {
+        setState(() {
+          GoogleService.signedIn = true;
+          signing = false;
+        });
+      } else {
+        setState(() {
+          signError = true;
+          signing = false;
+        });
+        if (GoogleService.startSign) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Problem while signing in. Check connection")));
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -76,16 +115,7 @@ large language model GPT 3.5 Turbo.''',
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12))),
                       onPressed: () {
-                        try {
-                          GoogleService.signInWithGoogle();
-                          GoogleService.signedIn = true;
-                        } catch (e) {
-                          showDialog(
-                              context: context,
-                              builder: ((context) {
-                                return Text("there is a problem");
-                              }));
-                        }
+                        signIn();
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -107,6 +137,23 @@ large language model GPT 3.5 Turbo.''',
               ],
             ),
           ]),
+          (signing)
+              ? Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  child: Center(
+                    child: SizedBox(
+                      height: height * 0.07,
+                      width: width * 0.15,
+                      child: const LoadingIndicator(
+                        indicatorType: Indicator.circleStrokeSpin,
+                        colors: [Colors.white],
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox()
         ],
       ),
     );

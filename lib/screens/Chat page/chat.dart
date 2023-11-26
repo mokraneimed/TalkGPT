@@ -74,7 +74,9 @@ class _ChatPage extends State<ChatPage> {
     final width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).unfocus();
+        if (!ChatController.isLoading) {
+          FocusScope.of(context).unfocus();
+        }
       },
       child: Consumer<ChatController>(
           builder: (context, chatController, children) {
