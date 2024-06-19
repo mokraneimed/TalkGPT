@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 final String apiUrl = "https://api.openai.com/v1/chat/completions";
-final String apiKey = "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";
+final String apiKey = "";
 
 class DataService {
   bool isLoading = false;
